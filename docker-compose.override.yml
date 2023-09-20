@@ -1,0 +1,35 @@
+services:
+    search:
+        environment:
+            #- ASPNETCORE_ENVIRONMENT=Development
+            - EUREKA__CLIENT__SERVICEURL=http://eureka-server:8761/eureka
+            #- ASPNETCORE_URLS=http://+:80
+    api-gateway:
+        environment:
+            - JWT__Key=This is my interesting secret key for jwt
+            - JWT__Issuer=travelPortal.io
+            - JWT__Audience=travelPortal guests
+            - EUREKA__CLIENT__SERVICEURL=http://eureka-server:8761/eureka
+    auth:
+        environment:
+            - JWT__Key=This is my interesting secret key for jwt
+            - EUREKA__CLIENT__SERVICEURL=http://eureka-server:8761/eureka
+    booking:
+        environment:
+            - EUREKA__CLIENT__SERVICEURL=http://eureka-server:8761/eureka
+            - Provider__Api__url=http://provider.travelportal/api/v1/provider
+            - USER__API__URL=http://user.travelportal/api/v1/user
+    user:
+        environment:
+            - EUREKA__CLIENT__SERVICEURL=http://eureka-server:8761/eureka
+    provider:
+        environment:
+            - EVENTBUS__HOSTADDRESS=amqp://guest:guest@rabbitmq:5672
+    notification:
+        environment:
+            - RABBITMQ__HOST=amqp://guest:guest@rabbitmq:5672
+            - USER__API__URL=http://user.travelportal/api/v1/user
+            - REFUND__API__URL=http://refund.travelportal/api/v1/refund
+    refund:
+        environment:
+            - USER__API__URL=http://user.travelportal/api/v1/user

@@ -1,0 +1,132 @@
+{
+  "Routes": [
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.SEARCH",
+      "DownstreamPathTemplate": "/api/v1/Search/flight/{from}/{to}/{flightClass}/{date}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Search/flight/{from}/{to}/{flightClass}/{date}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.SEARCH",
+      "DownstreamPathTemplate": "/api/v1/Search/hotel/{from}/{to}/{hotelClass}/{city}/{name}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Search/hotel/{from}/{to}/{hotelClass}/{city}/{name}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.BOOKING",
+      "DownstreamPathTemplate": "/api/v1/booking/create",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/booking/create",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_userid": "Claims[UserID] > value > |"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.BOOKING",
+      "DownstreamPathTemplate": "/api/v1/booking/confirm",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/booking/confirm",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_userid": "Claims[UserID] > value > |"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.BOOKING",
+      "DownstreamPathTemplate": "/api/v1/booking/shortlist",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/booking/shortlist",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_userid": "Claims[UserID] > value > |"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.AUTH",
+      "DownstreamPathTemplate": "/api/v1/Auth/users",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Auth/users",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.AUTH",
+      "DownstreamPathTemplate": "/api/v1/Auth",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Auth",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "ServiceName": "SERVICE.TRAVELPORTAL.USER",
+      "DownstreamPathTemplate": "/api/v1/user",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/user",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_userid": "Claims[UserID] > value > |"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Consumer"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "RequestIdKey": "OcRequestId",
+    "DownstreamScheme": "http",
+    "ReRoutesCaseSensitive": false,
+    "UseServiceDiscovery": true,
+    "ServiceDiscoveryProvider": {
+      "Host": "services.gateway",
+      "Port": 8761,
+      "Type": "Eureka"
+    }
+  }
+}

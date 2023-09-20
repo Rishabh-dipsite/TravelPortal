@@ -1,0 +1,170 @@
+services:
+
+  api-gateway:
+    image: drexcdp/travelportal-api-gateway
+    build: ./APIGateway
+    container_name: api-gateway
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck: 
+      test: curl --fail http://localhost || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    hostname: gateway.travelportal
+    ports:
+      - "5001:80"
+      - "9100:443"
+    networks:
+      - backend_network
+
+  search:
+    image: drexcdp/travelportal-search
+    build: ./SearchService
+    container_name: search
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck: 
+      test: curl --fail http://localhost/api/v1/HealthCheck || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    hostname: search.travelportal
+    ports:
+      - "5002:80"
+      - "9200:443"
+    networks:
+      - backend_network
+
+  auth:
+    image: drexcdp/travelportal-auth
+    build: ./AuthService
+    container_name: auth
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck: 
+      test: curl --fail http://localhost/api/v1/Auth/users || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    hostname: auth.travelportal
+    ports:
+      - "5003:80"
+      - "9300:443"
+    networks:
+      - backend_network
+      
+  booking:
+    image: drexcdp/travelportal-booking
+    build:
+      dockerfile: ./BookingService/Dockerfile
+    container_name: booking
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    hostname: booking.travelportal
+    ports:
+      - "5004:80"
+      - "9400:443"
+    networks:
+      - backend_network
+
+  user:
+    image: drexcdp/travelportal-user
+    build:
+      dockerfile: ./UserService/Dockerfile
+    container_name: user
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    hostname: user.travelportal
+    ports:
+      - "5007:80"
+      - "9700:443"
+    networks:
+      - backend_network
+      
+  provider:
+    image: drexcdp/travelportal-provider
+    build:
+      #context: .
+      dockerfile: ./ProviderService/Dockerfile
+    container_name: provider
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    hostname: provider.travelportal
+    ports:
+      - "5005:80"
+      - "9500:443"
+    networks:
+      - backend_network
+
+  notification:
+    image: drexcdp/travelportal-notification
+    build:
+      dockerfile: ./NotificationService/Dockerfile
+    container_name: notification
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    hostname: notification.travelportal
+    ports:
+      - "5006:80"
+      - "9600:443"
+    networks:
+      - backend_network
+
+  refund:
+    image: drexcdp/travelportal-refund
+    build:
+      dockerfile: ./RefundService/Dockerfile
+    container_name: refund
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    hostname: refund.travelportal
+    ports:
+      - "5008:80"
+      - "9800:443"
+    networks:
+      - backend_network
+
+  eureka-server:
+    image: steeltoeoss/eureka-server
+    container_name: eureka-server
+    hostname: eureka-server
+    restart: always
+    healthcheck:
+      test: exit 0
+      interval: "5s"
+    networks:
+      - backend_network
+    ports:
+      - "8761:8761"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    environment:
+        RABBITMQ_ERLANG_COOKIE: guest
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    hostname: rabbitmq
+    healthcheck:
+      test: exit 0
+      interval: "5s"
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
